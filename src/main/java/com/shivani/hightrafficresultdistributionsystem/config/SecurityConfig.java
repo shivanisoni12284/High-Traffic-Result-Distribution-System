@@ -1,6 +1,7 @@
 package com.shivani.hightrafficresultdistributionsystem.config;
 
 import com.shivani.hightrafficresultdistributionsystem.auth.filter.JwtFilter;
+import com.shivani.hightrafficresultdistributionsystem.ratelimit.filter.RateLimiterFilter;
 import lombok.RequiredArgsConstructor;
 import org.springframework.context.annotation.Bean;
 import org.springframework.context.annotation.Configuration;
@@ -10,7 +11,6 @@ import org.springframework.security.config.annotation.method.configuration.Enabl
 import org.springframework.security.config.annotation.web.builders.HttpSecurity;
 import org.springframework.security.config.annotation.web.configuration.EnableWebSecurity;
 import org.springframework.security.config.http.SessionCreationPolicy;
-import org.springframework.security.crypto.bcrypt.BCrypt;
 import org.springframework.security.crypto.bcrypt.BCryptPasswordEncoder;
 import org.springframework.security.crypto.password.PasswordEncoder;
 import org.springframework.security.web.SecurityFilterChain;
@@ -23,6 +23,7 @@ import org.springframework.security.web.authentication.UsernamePasswordAuthentic
 public class SecurityConfig {
 
     private final JwtFilter jwtFilter;
+    private final RateLimiterFilter rateLimiterFilter;
 
     @Bean
     public SecurityFilterChain securityFilterChain(HttpSecurity http)throws Exception{
@@ -32,24 +33,29 @@ public class SecurityConfig {
                         session.sessionCreationPolicy(SessionCreationPolicy.STATELESS)
                 )
                 .authorizeHttpRequests(auth -> auth
-//                        // Public APIs
-//                        .requestMatchers("/api/v1/auth/**").permitAll()
-//
-//                        //Student APIs
-//                        .requestMatchers("/api/v1/students/**").hasRole("STUDENT")
-//
-//                        //Admin APIs
-//                        .requestMatchers("/api/v1/admin/**").hasRole("ADMIN")
-//
-//                        //SChool APIs
-//                        .requestMatchers("/api/v1/school/**").hasRole("SCHOOL")
-//
-//                        // Everything Else
-//                        .anyRequest().authenticated()
-                                .anyRequest().permitAll()
 
-                );
-//                .addFilterBefore(jwtFilter, UsernamePasswordAuthenticationFilter.class);
+                        // Public APIs
+                        .requestMatchers("/api/v1/auth/**").permitAll()
+                        .requestMatchers("/api/v1/results/**").permitAll()
+
+                        //Student APIs
+                        .requestMatchers("/api/v1/students/**","/api/v1/results/**").hasRole("STUDENT")
+
+                        //Admin APIs
+                        .requestMatchers("/api/v1/admin/**").hasRole("ADMIN")
+
+                        //SChool APIs
+                        .requestMatchers("/api/v1/school/**").hasRole("SCHOOL")
+
+                        // Everything Else
+                        .anyRequest().authenticated()
+
+
+                )
+                .addFilterBefore(jwtFilter, UsernamePasswordAuthenticationFilter.class)
+                .addFilterAfter(rateLimiterFilter, JwtFilter.class);
+
+
         return http.build();
 
     }

@@ -21,5 +21,11 @@ spring:
       host: localhost
       port: 6379
 
+rate-limit:
+  max-requests: 10
+  window-seconds: 60s
+
+
+
 
 

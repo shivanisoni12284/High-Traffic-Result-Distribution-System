@@ -75,6 +75,11 @@ public class GlobalExceptionHandler{
         return ResponseEntity.status(HttpStatus.BAD_REQUEST).body(ApiResponse.error(ex.getMessage(),"Exam already exists."));
     }
 
+    @ExceptionHandler(RateLimitExceededException.class)
+    public ResponseEntity<ApiResponse<String>> handleRateLimitExceededException(RateLimitExceededException ex){
+        return ResponseEntity.status(HttpStatus.TOO_MANY_REQUESTS).body(ApiResponse.error(ex.getMessage(),"Request exceeded its limit."));
+    }
+
 
 
 }

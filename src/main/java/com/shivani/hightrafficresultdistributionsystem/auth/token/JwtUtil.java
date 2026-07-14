@@ -1,5 +1,6 @@
 package com.shivani.hightrafficresultdistributionsystem.auth.token;
 
+import com.shivani.hightrafficresultdistributionsystem.auth.dto.CustomUserDetails;
 import io.jsonwebtoken.Claims;
 import io.jsonwebtoken.Jwts;
 import io.jsonwebtoken.security.Keys;
@@ -14,7 +15,6 @@ import java.util.HashMap;
 import java.util.Map;
 
 @Component
-@Service
 
 public class JwtUtil {
 
@@ -48,6 +48,9 @@ public class JwtUtil {
     }
 
     public String generateToken(UserDetails userDetails){
+
+        CustomUserDetails customUserDetails = (CustomUserDetails) userDetails;
+
         Map<String,Object> claims = new HashMap<>();
         claims.put(
                 "roles",
@@ -56,6 +59,8 @@ public class JwtUtil {
                         .map(GrantedAuthority::getAuthority)
                         .toList()
         );
+        claims.put("userId",customUserDetails.getUserId());
+
         return createToken(claims,userDetails.getUsername());
     }
 
@@ -78,5 +83,9 @@ public class JwtUtil {
         return username.equals(userDetails.getUsername()) && !isTokenExpired(token);
     }
 
+    public Long extractUserId(String token) {
+        Claims claims = extractAllClaims(token);
+        return claims.get("userId", Long.class);
+    }
 
 }
