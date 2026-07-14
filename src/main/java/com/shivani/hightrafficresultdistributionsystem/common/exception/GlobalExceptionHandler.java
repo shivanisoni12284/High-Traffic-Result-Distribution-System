@@ -31,4 +31,50 @@ public class GlobalExceptionHandler{
 
         return ResponseEntity.badRequest().body(ApiResponse.error(errors,"validation failed"));
     }
+
+    @ExceptionHandler(StudentAlreadyRegisteredException.class)
+    public ResponseEntity<ApiResponse<String>> handleStudentAreadyRegisteredException(StudentAlreadyRegisteredException ex){
+        return ResponseEntity.status(HttpStatus.BAD_REQUEST).body(ApiResponse.error(ex.getMessage(),"student already registered "));
+    }
+
+    @ExceptionHandler(UserNotFoundException.class)
+    public ResponseEntity<ApiResponse<String>> handleUserNotFoundException(UserNotFoundException ex){
+        return ResponseEntity.status(HttpStatus.BAD_REQUEST).body(ApiResponse.error(ex.getMessage(),"user not found"));
+    }
+
+    @ExceptionHandler(SubjectNotFoundException.class)
+    public ResponseEntity<ApiResponse<String>> handleSubjectNotFoundException(SubjectNotFoundException ex){
+        return ResponseEntity.status(HttpStatus.NOT_FOUND).body(ApiResponse.error(ex.getMessage(),"subject not found"));
+    }
+
+    @ExceptionHandler(MarksAlreadyExistsException.class)
+    public ResponseEntity<ApiResponse<String>> handleMarksAlreadyExistsException(MarksAlreadyExistsException ex){
+        return ResponseEntity.status(HttpStatus.BAD_REQUEST).body(ApiResponse.error(ex.getMessage(),"Marks already exists "));
+    }
+
+    @ExceptionHandler(InvalidPracticalMarksException.class)
+    public ResponseEntity<ApiResponse<String>> handleInvalidPracticalMarksException(InvalidPracticalMarksException ex){
+        return ResponseEntity.status(HttpStatus.BAD_REQUEST).body(ApiResponse.error(ex.getMessage(),"practical marks must be in range"));
+    }
+
+    @ExceptionHandler(InvalidTheoryMarksException.class)
+    public ResponseEntity<ApiResponse<String>> handleInvalidTheoryMarksException(InvalidTheoryMarksException ex){
+        return ResponseEntity.status(HttpStatus.BAD_REQUEST).body(ApiResponse.error(ex.getMessage(),"theory marks should be within range"));
+    }
+
+
+
+    @ExceptionHandler(ExamAlreadyExistsException.class)
+    public ResponseEntity<ApiResponse<String>> handleExamAlreadyExistsException(ExamAlreadyExistsException ex){
+        return ResponseEntity.status(HttpStatus.BAD_REQUEST).body(ApiResponse.error(ex.getMessage(),"Exam already exists."));
+    }
+
+
+    @ExceptionHandler(ResultNotFoundException.class)
+    public ResponseEntity<ApiResponse<String>> handleResultNotFoundException(ResultNotFoundException ex){
+        return ResponseEntity.status(HttpStatus.BAD_REQUEST).body(ApiResponse.error(ex.getMessage(),"Exam already exists."));
+    }
+
+
+
 }

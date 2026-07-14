@@ -57,3 +57,22 @@ Q. Option 1: Roll number can never be reused (Most common for schools/universiti
 
 
 @ write manually queries for repositories
+
+
+
+///    Authentication   ///
+
+Q. PasswordEncoder internal working 
+Q. Bcrypt vs Argon2
+Q. session,cookie,sessionId
+Q. hash unique Salt
+Q. password Algorithm = MD5 -> SHA1 -> SHA256 -> BCrypt -> Argon2
+Q. Authentication Manager 
+Q.  public AuthenticationManager authenticationManager(AuthenticationConfiguration configuration) throws Exception{
+             return configuration.getAuthenticationManager();
+}
+
+Q. before Builder.default enabled = true
+Q. Assignment of id createdAt ye kab hota hai 
+Q. @component
+Q. HttpStatus.ok or Ok

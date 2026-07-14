@@ -1,6 +1,7 @@
 package com.shivani.hightrafficresultdistributionsystem.student.schema;
 
 
+import com.shivani.hightrafficresultdistributionsystem.common.util.BaseEntity;
 import jakarta.persistence.*;
 import jakarta.validation.constraints.NotBlank;
 import jakarta.validation.constraints.NotNull;
@@ -23,11 +24,7 @@ import java.time.LocalDateTime;
 @AllArgsConstructor
 @NoArgsConstructor
 @Builder
-public class Student {
-
-    @Id
-    @GeneratedValue(strategy = GenerationType.IDENTITY)
-    private Long id;
+public class Student extends BaseEntity {
 
     @Column(unique = true,nullable = false)
     private String rollNumber;
@@ -67,14 +64,14 @@ public class Student {
 
     @Builder.Default
     private Boolean active=true;
+//
+//    private LocalDateTime deletedAt;
 
-    private LocalDateTime deletedAt;
-
-    @CreatedDate
-//    @Column(Updatable = "false")
-    private LocalDateTime createdAt;
-
-    @LastModifiedDate
-    private LocalDateTime updatedAt;
+//    @CreatedDate
+////    @Column(Updatable = "false")
+//    private LocalDateTime createdAt;
+//
+//    @LastModifiedDate
+//    private LocalDateTime updatedAt;
 
 }
