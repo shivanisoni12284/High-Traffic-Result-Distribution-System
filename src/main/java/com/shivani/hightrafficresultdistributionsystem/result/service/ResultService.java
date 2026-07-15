@@ -1,7 +1,10 @@
 package com.shivani.hightrafficresultdistributionsystem.result.service;
 
+import com.shivani.hightrafficresultdistributionsystem.common.exception.ResultAlreadyGeneratedException;
 import com.shivani.hightrafficresultdistributionsystem.common.exception.ResultNotFoundException;
 import com.shivani.hightrafficresultdistributionsystem.common.exception.StudentNotFoundException;
+import com.shivani.hightrafficresultdistributionsystem.kafka.event.ResultGenerationEvent;
+import com.shivani.hightrafficresultdistributionsystem.kafka.producer.ResultEventProducer;
 import com.shivani.hightrafficresultdistributionsystem.marks.repository.MarksRepository;
 import com.shivani.hightrafficresultdistributionsystem.marks.schema.Grade;
 import com.shivani.hightrafficresultdistributionsystem.marks.schema.Marks;
@@ -15,14 +18,18 @@ import com.shivani.hightrafficresultdistributionsystem.student.dto.StudentRespon
 import com.shivani.hightrafficresultdistributionsystem.student.repository.StudentRepository;
 import com.shivani.hightrafficresultdistributionsystem.student.schema.Student;
 import lombok.RequiredArgsConstructor;
+import lombok.extern.slf4j.Slf4j;
 import org.springframework.stereotype.Service;
 
+import java.time.LocalDateTime;
 import java.util.ArrayList;
 import java.util.List;
 import java.util.Optional;
+import java.util.UUID;
 
 @RequiredArgsConstructor
 @Service
+@Slf4j
 public class ResultService {
 
     private final ResultRedisCache resultRedisCache;
@@ -30,10 +37,16 @@ public class ResultService {
     private final StudentRepository studentRepository;
     private final MarksRepository marksRepository;
     private final ResultMapper resultMapper;
+    private final ResultEventProducer resultEventProducer;
 
-    public ResultResponseDto createResult(String rollNumber){
+    public ResultResponseDto generateResult(String rollNumber){
+
 
         Student student = studentRepository.findByRollNumberAndDeletedAtIsNull(rollNumber).orElseThrow(() -> new StudentNotFoundException("student not found with rollNumber:"+rollNumber));
+        if (resultRepository.existsByStudent(student)) {
+            log.info("Result already generated for {}", rollNumber);
+            return null;   // or simply return if your method is void
+        }
         List<Marks> studentMarks = marksRepository.findByStudent(student);
 
         boolean pass = true;
@@ -108,5 +121,24 @@ public class ResultService {
         return response;
     }
 
+
+    public void createResult(String rollNumber){
+        Student student = studentRepository
+                .findByRollNumberAndDeletedAtIsNull(rollNumber)
+                .orElseThrow(()-> new StudentNotFoundException("student not found"));
+
+        if (resultRepository.existsByStudent(student)) {
+            throw new ResultAlreadyGeneratedException(
+                    "A result already exists for roll number: "+rollNumber);
+        }
+        ResultGenerationEvent event = ResultGenerationEvent.builder()
+                .eventId(UUID.randomUUID())
+                .rollNumber(rollNumber)
+                .createdAt(LocalDateTime.now())
+                .build();
+
+        resultEventProducer.publish(event);
+
+    }
 
 }

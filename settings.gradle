@@ -1,1 +1,3 @@
 rootProject.name = 'high-traffic-result-distribution-system'
+
+include 'docker-compose.yml'

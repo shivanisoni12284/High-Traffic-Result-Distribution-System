@@ -18,6 +18,12 @@ repositories {
 }
 
 dependencies {
+	//rabbitmq
+	implementation 'org.springframework.boot:spring-boot-starter-amqp'
+	implementation 'com.github.librepdf:openpdf:2.0.3'
+
+	//Kafka
+	 implementation 'org.springframework.kafka:spring-kafka'
 
 	implementation 'org.springframework.boot:spring-boot-starter-data-redis'
 	implementation 'redis.clients:jedis:7.2.0'

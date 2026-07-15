@@ -16,6 +16,29 @@ spring:
       hibernate:
         format_sql: true
 
+  kafka:
+    bootstrap-servers: localhost:9092
+    producer:
+      key-serializer: org.apache.kafka.common.serialization.StringSerializer
+      value-serializer: org.springframework.kafka.support.serializer.JsonSerializer
+      acks: all
+      retries: 3
+
+
+    consumer:
+      group-id: result-service
+      auto-offset-reset: earliest
+      key-deserializer: org.apache.kafka.common.serialization.StringDeserializer
+      value-deserializer: org.springframework.kafka.support.serializer.JsonDeserializer
+      properties:
+        spring.json.trusted.packages: "*"
+
+  rabbitmq:
+    host: localhost
+    port: 5672
+    username: admin
+    password: admin
+
   data:
     redis:
       host: localhost
@@ -24,6 +47,12 @@ spring:
 rate-limit:
   max-requests: 10
   window-seconds: 60s
+
+app:
+  kafka:
+    topic:
+      result-generation: result-generation-topic
+
 
 
 

@@ -33,6 +33,7 @@ public class SecurityConfig {
                         session.sessionCreationPolicy(SessionCreationPolicy.STATELESS)
                 )
                 .authorizeHttpRequests(auth -> auth
+                        .requestMatchers("/kafka/**").permitAll()
 
                         // Public APIs
                         .requestMatchers("/api/v1/auth/**").permitAll()

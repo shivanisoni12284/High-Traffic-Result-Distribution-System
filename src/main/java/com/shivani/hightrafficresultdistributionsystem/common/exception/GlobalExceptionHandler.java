@@ -81,5 +81,11 @@ public class GlobalExceptionHandler{
     }
 
 
+    @ExceptionHandler(ResultAlreadyGeneratedException.class)
+    public ResponseEntity<ApiResponse<String>> handleResultAlreadyGeneratedException(ResultAlreadyGeneratedException ex){
+        return ResponseEntity.status(HttpStatus.BAD_REQUEST).body(ApiResponse.error(ex.getMessage(),"Result already generated"));
+    }
+
+
 
 }

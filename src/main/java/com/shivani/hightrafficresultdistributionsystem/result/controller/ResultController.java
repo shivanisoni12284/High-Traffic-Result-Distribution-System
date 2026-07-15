@@ -17,8 +17,9 @@ public class ResultController {
 
     @PostMapping("/{rollNumber}")
     public ResponseEntity<ApiResponse<ResultResponseDto>> createResultbyRollNumber(@PathVariable String rollNumber){
-        ResultResponseDto result = resultService.createResult(rollNumber);
-        return ResponseEntity.ok(ApiResponse.success("successfully fetched result",result));
+//        ResultResponseDto result = resultService.createResult(rollNumber);
+        resultService.createResult(rollNumber);
+        return ResponseEntity.ok(ApiResponse.success("Result generation started","Request accepted"));
 
     }
 
